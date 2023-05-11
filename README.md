@@ -2,6 +2,8 @@
 This repository contains the MATLAB code that accompanies the research paper:
 > Leeman AP., Köhler J., Bennani S., Zeilinger MN. “Predictive safety filter using system level synthesis.” Accepted L4DC2023 (2022)
 
+![Project Image](fig1.pdf)
+
 The paper is freely available on [arXiv](https://arxiv.org/abs/2212.02111).
 
 The code in this repository demonstrates the implementation of the algorithms and models discussed in the paper. To run this code, you will need MATLAB, the Multi-Parametric Toolbox 3 (MPT3) and MOSEK.
