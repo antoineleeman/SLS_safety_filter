@@ -1,6 +1,6 @@
 # Predictive safety filter using system level synthesis
 This repository contains the MATLAB code that accompanies the research paper:
-> Leeman AP., Köhler J., Bennani S., Zeilinger MN. “Predictive safety filter using system level synthesis.” Accepted L4DC2023 (2022)
+> Leeman AP., Köhler J., Bennani S., Zeilinger MN. “Predictive safety filter using system level synthesis.” Accepted L4DC2023 (2023)
 
 ![Project Image](fig1.pdf)
 
@@ -66,6 +66,6 @@ If you use this code in your research, please cite our paper:
 
 For any questions or issues related to this code, please contact the author:
 
-- Antoine Leeman: aleeman(at)ethz.ch
+- Antoine Leeman: aleeman(at)ethz(dot)ch
 
 We appreciate any feedback, bug reports, or suggestions for improvements.
