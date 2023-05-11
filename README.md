@@ -22,21 +22,23 @@ The code in this repository demonstrates the implementation of the algorithms an
     a. Download the latest release of MPT3 from the MPT3 GitHub repository.
 
     b. Extract the downloaded archive and add the extracted folder to your MATLAB path by running the following command in the MATLAB Command Window:
-        ```
+    
+        
         addpath(genpath('/path/to/mpt3/folder'));
-        ```
+        
     
     c. Install the required solvers by running the following command in the MATLAB Command Window:
-        ```
+    
+        
         mpt_init;
-        ```
+        
     
 4. Clone this repository or download the code as a ZIP archive and extract it to a folder of your choice.
 
 5. Add the code folder to your MATLAB path by running the following command in the MATLAB Command Window:
-    ```
-    addpath('/path/to/your/code/folder');
-    ```
+    
+        addpath('/path/to/your/code/folder');
+    
 ## Usage
 
 Run the main script (i.e., main.m) to execute the algorithms and models discussed in the paper. Refer to the comments and documentation within the code for further details on the implementation.
