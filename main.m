@@ -1,5 +1,5 @@
 % -----------------------------------------------------------------------------
-% File: sls_safety_filter_leeman2023.m
+% File: main.m
 % Author: Antoine Leeman (aleeman@ethz.ch)
 % Date: 15th May 2023
 % License: MIT
@@ -17,7 +17,7 @@ clc;
 m = Integrator();  % create an instance of the Integrator class
 nx = m.nx;         % get the number of states
 nu = m.nu;         % get the number of inputs
-Bw = m.E;          % get the disturbance matrix from the Integrator class
+Bw = m.Bw;          % get the disturbance matrix from the Integrator class
 W = Bw*Polyhedron([eye(nx);-eye(nx)],ones(2*nx,1)); % create a polyhedron representing the disturbance set
 A = m.A;
 B = m.B;
@@ -316,6 +316,8 @@ end
 mean(timming_explicit)
 std(timming_explicit)
 %% Performance MPSF vs. SL-MPSF
+% !Warning! This portion of code may take a while to execute!
+h = waitbar(0,'Performance MPSF vs. SL-MPSF: Gridding the state-space');
 
 max_v0_MPSF = nan(length(x1_range), length(x2_range));
 max_v0_SL_MPSF = nan(length(x1_range), length(x2_range));
@@ -347,47 +349,26 @@ for i = 1:length(x1_range)
             max_v0_SL_MPSF(i,j) = full(max(norm(v_star-m.u_max)^2,norm(v_star2+m.u_max)^2));
         end
     end
+    waitbar(i/length(x1_range), h);
 end
-
-grid_density^2
-mean(timming_SL_MPSF)
-mean(timming_MPSF)
-
-std(timming_SL_MPSF)
-std(timming_MPSF)
+close(h);
 
 disp(table([
-mean(timming_explicit); 
-mean(timming_SL_MPSF); mean(timming_MPSF)], [std(timming_explicit); std(timming_SL_MPSF); std(timming_MPSF)], 'VariableNames', {'mean', 'std'}, 'RowNames', {'Explicit','SL_MPSF', 'MPSF'}))
-
+mean(timming_explicit); mean(timming_SL_MPSF); mean(timming_MPSF)], [std(timming_explicit); std(timming_SL_MPSF); std(timming_MPSF)], 'VariableNames', {'mean', 'std'}, 'RowNames', {'Explicit','SL_MPSF', 'MPSF'}))
 
 RoA_MPSF = RoA_MPSF'; 
 RoA_SL_MPSF = RoA_SL_MPSF';
 [X, Y] = meshgrid(x1_range, x2_range);
-%ave('data.mat');
-%% figure
-clear all;
-close all;
-clc;
-load('data.mat')
+% save('data_paper.mat');
+%% Figure
+%% Uncomment to retrieve the figure from the paper
+% clear all;
+% close all;
+% clc;
+% load('data_paper.mat')
 %%
 f = figure(1);
 clf;
-% colors =     [0.0504    0.0298    0.5280
-%     0.4176    0.0006    0.6584
-%     0.6928    0.1651    0.5645
-%     0.8814    0.3925    0.3832
-%     0.9883    0.6523    0.2114
-%     0.9400    0.9752    0.1313
-%     ];
-% colors =[    0.0504    0.0298    0.5280
-%     0.3656    0.0030    0.6499
-%     0.6107    0.0902    0.6200
-%     0.7964    0.2780    0.4713
-%     0.9283    0.4730    0.3261
-%     0.9936    0.7018    0.1845
-%     0.9400    0.9752    0.1313
-%     ];
 
 colors =[    0.2670    0.0049    0.3294
     0.2673    0.2259    0.5132
@@ -405,8 +386,6 @@ color_max_RPI = colors(4,:);
 color_X = colors(5,:);
 color_max_RCI = colors(6,:);
 
-
-%[X, Y] = meshgrid(x1_range, x2_range);
 subplot(1,3,1);
 kav = convhull(RoA_MPSF(:,1:2));
 hold on
@@ -519,4 +498,4 @@ set(gca,'FontSize',8)
 set(gcf,'units','centimeters','Position', [0 0 25 15]);
 
 exportgraphics(gcf,strcat('fig1.pdf'),'ContentType','vector');
-
+saveas(gcf, 'fig1.png');
