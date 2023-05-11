@@ -1,6 +1,7 @@
 # Predictive safety filter using system level synthesis
 This repository contains the MATLAB code that accompanies the research paper:
-> Leeman AP., Köhler J., Bennani S., Zeilinger MN. “Predictive safety filter using system level synthesis.” Accepted L4DC2023 (2023)
+> Leeman AP., Köhler J., Bennani S., Zeilinger MN. “Predictive safety filter using system level synthesis.” 
+> Accepted L4DC2023 (2023)
 
 This repository contains the MATLAB implementation of the System Level Synthesis based Model Predictive Safety Filter (SL-MPSF) scheme presented in our paper. This novel approach to safety filters enhances the safety of control systems, especially those using learning-based controllers or human inputs, by ensuring constraint satisfaction.
 
