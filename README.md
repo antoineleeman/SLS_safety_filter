@@ -4,9 +4,15 @@ This repository contains the MATLAB code that accompanies the research paper:
 
 ![Project Image](fig1.pdf)
 
-The paper is freely available on [arXiv](https://arxiv.org/abs/2212.02111).
+This repository contains the MATLAB implementation of the System Level Synthesis based Model Predictive Safety Filter (SL-MPSF) scheme presented in our paper. This novel approach to safety filters enhances the safety of control systems, especially those using learning-based controllers or human inputs, by ensuring constraint satisfaction.
 
-The code in this repository demonstrates the implementation of the algorithms and models discussed in the paper. To run this code, you will need MATLAB, the Multi-Parametric Toolbox 3 (MPT3) and MOSEK.
+Our code provides an implementation of an improved Model Predictive Safety Filter (MPSF) formulation that integrates System Level Synthesis (SLS) techniques. The resulting SL-MPSF scheme guarantees safety for linear systems that are subject to bounded disturbances and provides an enlarged safe set. Compared to conventional MPSF formulations, our approach requires fewer and less severe modifications of potentially unsafe control inputs to certify safety.
+
+Additionally, this repository includes an implementation of an explicit variant of the SL-MPSF formulation. This variant maintains the scalability of the SL-MPSF scheme while reducing the required online computational effort, which is a major drawback of traditional MPSF approaches.
+
+The code contains a numerical example demonstrating the advantages of our SL-MPSF formulations over state-of-the-art MPSF formulations.
+
+The paper is freely available on [arXiv](https://arxiv.org/abs/2212.02111).
 
 ## Prerequisites
 - MATLAB (tested with version R2020b)
