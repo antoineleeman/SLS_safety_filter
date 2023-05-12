@@ -7,7 +7,7 @@ This repository contains the MATLAB implementation of the System Level Synthesis
 
 Our code provides an implementation of an improved Model Predictive Safety Filter (MPSF) formulation that integrates System Level Synthesis (SLS) techniques. The resulting SL-MPSF scheme guarantees safety for linear systems that are subject to bounded disturbances and provides an enlarged safe set. Compared to conventional MPSF formulations, our approach requires fewer and less severe modifications of potentially unsafe control inputs to certify safety.
 
-Additionally, this repository includes an implementation of an explicit variant of the SL-MPSF formulation. This variant maintains the scalability of the SL-MPSF scheme while reducing the required online computational effort, which is a major drawback of traditional MPSF approaches.
+Additionally, this repository includes an implementation of an explicit variant of the SL-MPSF formulation. This variant reduces the required online computational effort, which is a major drawback of traditional MPSF approaches.
 
 The code contains a numerical example demonstrating the advantages of our SL-MPSF formulations over state-of-the-art MPSF formulations.
 
