@@ -1,7 +1,7 @@
 # Predictive safety filter using system level synthesis
 This repository contains the MATLAB code that accompanies the research paper:
 > Leeman AP., Köhler J., Bennani S., Zeilinger MN. “Predictive safety filter using system level synthesis.” 
-> Accepted L4DC2023 (2023)
+> Proceedings of The 5th Annual Learning for Dynamics and Control Conference, PMLR 211:1180-1192 (2023) doi:10.3929/ethz-b-000615512
 
 This repository contains the MATLAB implementation of the System Level Synthesis based Model Predictive Safety Filter (SL-MPSF) scheme presented in our paper. This novel approach to safety filters enhances the safety of control systems, especially those using learning-based controllers or human inputs, by ensuring constraint satisfaction.
 
@@ -13,7 +13,7 @@ The code contains a numerical example demonstrating the advantages of our SL-MPS
 
 ![Project Image](fig1.png)
 
-The paper is freely available on [arXiv](https://arxiv.org/abs/2212.02111).
+The paper is freely available on [PMLR](https://proceedings.mlr.press/v211/leeman23a/leeman23a.pdf).
 
 ## Prerequisites
 - MATLAB (tested with version R2020b)
@@ -45,11 +45,14 @@ This project is licensed under the MIT License.
 
 If you use this code in your research, please cite our paper:
   ```
-  @article{leeman2022predictive,
-  title={Predictive safety filter using system level synthesis},
-  author={Leeman, Antoine P and K{\"o}hler, Johannes and Benanni, Samir and Zeilinger, Melanie N},
-  journal={arXiv preprint arXiv:2212.02111},
-  year={2022}
+  @inproceedings{leeman2023a,
+    title = {Predictive safety filter using system level synthesis},
+    year = {2023},
+    booktitle = {Proceedings of the 5th Annual Learning for Dynamics and Control Conference, PMLR},
+    volume = {211},
+    author={Leeman, Antoine P. and K{\"o}hler, Johannes and Benanni, Samir and Zeilinger, Melanie N.},
+    pages = {1180-1192},
+    doi = {10.3929/ethz-b-000615512}
   }
   ```
   
