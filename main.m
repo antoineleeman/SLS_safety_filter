@@ -4,8 +4,17 @@
 % Date: 15th May 2023
 % License: MIT
 % Reference:
-% A.P. Leeman, J. Köhler, S. Benanni, M.N. Zeilinger, "Predictive Safety Filter
-% Using System Level Synthesis", 2023.
+%{
+@inproceedings{leeman2023a,
+  title = {Predictive safety filter using system level synthesis},
+  year = {2023},
+  booktitle = {Proceedings of the 5th Annual Learning for Dynamics and Control Conference, PMLR},
+  volume = {211},
+  author={Leeman, Antoine P. and K{\"o}hler, Johannes and Benanni, Samir and Zeilinger, Melanie N.},
+  pages = {1180-1192},
+  doi = {10.3929/ethz-b-000615512}
+}
+%}
 % Link: https://arxiv.org/abs/2212.02111
 % -----------------------------------------------------------------------------
 %%
