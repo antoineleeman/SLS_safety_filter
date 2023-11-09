@@ -97,17 +97,17 @@ sigma_seq = kron(eye(N), m.Bw);
 Sigma_mat = blkdiag(eye(nx),sigma_seq);
 
 % Define the objective function
-objective = 0;
+objective = Z(:,N+1)'*m.Q_cost*Z(:,N+1);
+for k=1:N
+    objective = objective + Z(:,k)'*m.Q_cost*Z(:,k) + V(:,k)'*m.R_cost*V(:,k);
+end
 
-% Z(:,N+1)'*m.Q_cost*Z(:,N+1);
-% for k=1:N
-%     objective = objective + Z(:,k)'*m.Q_cost*Z(:,k) + V(:,k)'*m.R_cost*V(:,k);
-% end
-
+%objective = objective + norm([kron(eye(N+1),m.Q_cost)* Phi_x;kron(eye(N+1),m.Q_cost)* Phi_u],'fro')^2;
 objective = objective + norm([Phi_x;Phi_u],'fro')^2;
 
+
 % Initialise the constraints
-constraints = X0 == [-5;5];
+constraints = X0 == [-1;1];
 
 % Add structure constraints for Phi_x and Phi_u
 for k = 1 : N
@@ -187,3 +187,17 @@ V = value(V);
 
 plot(Z(1,:), Z(2,:))
 %%
+
+ii=3;
+kk=1; a = value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)));
+kk=2; b=  value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)));
+a-b
+
+
+ii=9;
+kk=7; a = value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)));
+kk=2; b=  value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)));
+
+a-b
+
+
