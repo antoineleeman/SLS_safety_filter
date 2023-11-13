@@ -45,7 +45,7 @@ This project is licensed under the MIT License.
 
 If you use this code in your research, please cite our paper:
   ```
-  @inproceedings{leeman2023a,
+  @inproceedings{leeman2023_L4DC,
     title = {Predictive safety filter using system level synthesis},
     year = {2023},
     booktitle = {Proceedings of the 5th Annual Learning for Dynamics and Control Conference, PMLR},
