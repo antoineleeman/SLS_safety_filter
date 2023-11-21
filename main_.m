@@ -83,32 +83,35 @@ system.d.min = -[Bw(1,1); Bw(2,2)]; % set the minimum disturbance values
 max_RCI = system.invariantSet(); % compute the maximal robust control invariant set
 
 %% Initialisation - System Level Model Predictive Safety Controller 
-
+N=5;
 % Define decision variables
 Z = sdpvar(nx, N + 1, 'full'); % State trajectory variables
 V = sdpvar(nu, N, 'full');     % Input trajectory variables
 X0 = sdpvar(nx, 1, 'full');    % Initial state variable
+U_L = sdpvar(nu, 1, 'full');   % learned-input bound variable
 
 Phi_x = sdpvar( (N + 1) * nx, (N + 1) * nx, 'full');
 Phi_u = sdpvar( (N + 1) * nu, (N + 1) * nx, 'full');
+
+objective =(V(:,1) - U_L)^2;
 
 % Construct the sigma matrix
 sigma_seq = kron(eye(N), m.Bw);
 Sigma_mat = blkdiag(eye(nx),sigma_seq);
 
-% Define the objective function
-objective = Z(:,N+1)'*m.Q_cost*Z(:,N+1);
-for k=1:N
-    objective = objective + Z(:,k)'*m.Q_cost*Z(:,k) + V(:,k)'*m.R_cost*V(:,k);
-end
+% % Define the objective function
+% objective = Z(:,N+1)'*m.Q_cost*Z(:,N+1);
+% for k=1:N
+%     objective = objective + Z(:,k)'*m.Q_cost*Z(:,k) + V(:,k)'*m.R_cost*V(:,k);
+% end
 
 %objective = objective + norm([kron(eye(N+1),m.Q_cost)* Phi_x;kron(eye(N+1),m.Q_cost)* Phi_u],'fro')^2;
-objective = objective + norm([Phi_x;Phi_u],'fro')^2;
+%objective = objective + norm([Phi_x;Phi_u],'fro')^2;
 
 
 % Initialise the constraints
-constraints = X0 == [-1;1];
-
+% constraints = X0 == [0;0];
+constraints = [];
 % Add structure constraints for Phi_x and Phi_u
 for k = 1 : N
     constraints = [constraints, Phi_x( (k - 1)*nx + 1: k*nx, k*nx + 1: end) == zeros(nx, (N + 1 - k)*nx)];
@@ -134,7 +137,7 @@ constraints = [ constraints, Z(:,1)==X0 ];
 for k=1:N
     constraints = [ constraints, Z(:,k+1)==A*Z(:,k)+B*V(:,k)];
 end
-
+% 
 % state constraints
 Fx = m.F_x;
 bx = m.b_x;
@@ -144,25 +147,25 @@ for ii = 1:N
         f = Fx(jj,:); b = bx(jj);
         LHS = f*Z(:,ii);
         for kk = 1:ii-1
-            LHS = LHS + norm(f*Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx), 1);
+            LHS = LHS + norm(f*Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx), 2);
         end
         constraints = [constraints, LHS <= b];
     end
 end
 
-% terminal constraint   
-X_f = max_RPI.H;
-Ft= X_f(:,1:nx);
-bt = X_f(:,nx+1);
-nFt = length(bt);
-for jj = 1:nFt
-    f = Ft(jj,:); b = bt(jj);
-    LHS = f*Z(:,N+1);
-    for kk = 1:N
-        LHS = LHS + norm(f*Phi_x(N*nx+1:(N+1)*nx,kk*nx+1:(kk+1)*nx),1);
-    end
-    constraints = [constraints, LHS <= b];
-end
+% % terminal constraint   
+% X_f = max_RPI.H;
+% Ft= X_f(:,1:nx);
+% bt = X_f(:,nx+1);
+% nFt = length(bt);
+% for jj = 1:nFt
+%     f = Ft(jj,:); b = bt(jj);
+%     LHS = f*Z(:,N+1);
+%     for kk = 1:N
+%         LHS = LHS + norm(f*Phi_x(N*nx+1:(N+1)*nx,kk*nx+1:(kk+1)*nx),2);
+%     end
+%     constraints = [constraints, LHS <= b];
+% end
 
 % add input constraint
 Fu = m.F_u;
@@ -173,14 +176,18 @@ for ii = 1:N
         f = Fu(jj,:); b = bu(jj);
         LHS = f*V(:,ii);
         for kk = 1:ii-1
-            LHS = LHS + norm(f*Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx),1);
+            LHS = LHS + norm(f*Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx),2);
         end
         constraints = [constraints, LHS <= b];
     end
 end
 
-options = sdpsettings('verbose',1);
-optimize(constraints,objective,options);
+%options = sdpsettings('verbose',1);
+%optimize(constraints,objective,options);
+
+options = sdpsettings('verbose',1,'solver','sedumi');
+sol_SL_MPSF = optimizer(constraints,objective,options,[X0;U_L],V(1));
+
 
 Z = value(Z);
 V = value(V);
@@ -189,8 +196,8 @@ plot(Z(1,:), Z(2,:))
 %%
 
 ii=3;
-kk=1; a = value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)));
-kk=2; b=  value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)));
+kk=1; a = value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)))
+kk=2; b=  value(Phi_u((ii-1)*nu+1:ii*nu,kk*nx+1:(kk+1)*nx))*inv(value(Phi_x((ii-1)*nx+1:ii*nx,kk*nx+1:(kk+1)*nx)))
 a-b
 
 

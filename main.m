@@ -109,7 +109,7 @@ end
 constraints = [constraints, terminal_set_MPSC.H(:,1:2)*(Z(:,N+1)) <= terminal_set_MPSC.H(:,3)];
 
 % Set optimization options
-options = sdpsettings('verbose',1,'solver','mosek');
+options = sdpsettings('verbose',1,'solver','sedumi');
 
 % Define the optimizer
 sol = optimizer(constraints,objective,options,[X0;U_L],V(1));
@@ -207,7 +207,7 @@ for ii = 1:N
     end
 end
 
-options = sdpsettings('verbose',1,'solver','mosek');
+options = sdpsettings('verbose',1,'solver','sedumi');
 sol_SL_MPSF = optimizer(constraints,objective,options,[X0;U_L],V(1));
 
 yalmip('clear');
