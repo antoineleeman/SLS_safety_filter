@@ -27,16 +27,19 @@ m = Integrator();  % create an instance of the Integrator class
 nx = m.nx;         % get the number of states
 nu = m.nu;         % get the number of inputs
 Bw = m.Bw;          % get the disturbance matrix from the Integrator class
-W = Bw*Polyhedron([eye(nx);-eye(nx)],ones(2*nx,1)); % create a polyhedron representing the disturbance set
 A = m.A;
 B = m.B;
 
+%%
+W = Bw*Polyhedron([eye(nx);-eye(nx)],ones(2*nx,1)); % create a polyhedron representing the disturbance set
 X = m.x_max*Polyhedron([eye(nx);-eye(nx)],ones(2*nx,1)); % create a polyhedron representing the state constraints
 U = m.u_max*Polyhedron([eye(nu);-eye(nu)],ones(2*nu,1)); % create a polyhedron representing the input constraints
 N = m.N;
 
 Kf = -dlqr(A,B,m.Q_cost,m.R_cost); % compute the feedback gain matrix
 A_cl = A+B*Kf; % compute the closed-loop system matrix
+
+%%
 
 % compute mRPI
 E = W; % initialize E to the disturbance set
@@ -83,7 +86,7 @@ system.d.min = -[Bw(1,1); Bw(2,2)]; % set the minimum disturbance values
 max_RCI = system.invariantSet(); % compute the maximal robust control invariant set
 
 %% Initialisation - System Level Model Predictive Safety Controller 
-N=5;
+N=10;
 % Define decision variables
 Z = sdpvar(nx, N + 1, 'full'); % State trajectory variables
 V = sdpvar(nu, N, 'full');     % Input trajectory variables
@@ -93,24 +96,24 @@ U_L = sdpvar(nu, 1, 'full');   % learned-input bound variable
 Phi_x = sdpvar( (N + 1) * nx, (N + 1) * nx, 'full');
 Phi_u = sdpvar( (N + 1) * nu, (N + 1) * nx, 'full');
 
-objective =(V(:,1) - U_L)^2;
+%objective =(V(:,1) - U_L)^2;
 
 % Construct the sigma matrix
 sigma_seq = kron(eye(N), m.Bw);
 Sigma_mat = blkdiag(eye(nx),sigma_seq);
 
-% % Define the objective function
-% objective = Z(:,N+1)'*m.Q_cost*Z(:,N+1);
-% for k=1:N
-%     objective = objective + Z(:,k)'*m.Q_cost*Z(:,k) + V(:,k)'*m.R_cost*V(:,k);
-% end
+% Define the objective function
+objective = Z(:,N+1)'*m.Q_cost*Z(:,N+1);
+for k=1:N
+    objective = objective + Z(:,k)'*m.Q_cost*Z(:,k) + V(:,k)'*m.R_cost*V(:,k);
+end
 
 %objective = objective + norm([kron(eye(N+1),m.Q_cost)* Phi_x;kron(eye(N+1),m.Q_cost)* Phi_u],'fro')^2;
-%objective = objective + norm([Phi_x;Phi_u],'fro')^2;
+objective = objective + norm([Phi_x;Phi_u],'fro')^2;
 
 
 % Initialise the constraints
-% constraints = X0 == [0;0];
+constraints = X0 == [1;0];
 constraints = [];
 % Add structure constraints for Phi_x and Phi_u
 for k = 1 : N
@@ -131,7 +134,7 @@ Id = eye((N + 1)*nx);
 constraints = [constraints, (Id - ZA_block)*Phi_x - ZB_block*Phi_u == Sigma_mat];
 
 % Add initial state constraint
-constraints = [ constraints, Z(:,1)==X0 ];
+constraints = [ constraints, Z(:,1)==X0];
 
 % Add state dynamics constraints
 for k=1:N
@@ -185,8 +188,8 @@ end
 %options = sdpsettings('verbose',1);
 %optimize(constraints,objective,options);
 
-options = sdpsettings('verbose',1,'solver','sedumi');
-sol_SL_MPSF = optimizer(constraints,objective,options,[X0;U_L],V(1));
+options = sdpsettings('verbose',1,'solver','gurobi');
+sol_SL_MPSF = optimize(constraints,objective,options);
 
 
 Z = value(Z);
